@@ -31,8 +31,11 @@ To start this project ,
 }
 
 
+10. Download the policy file (.xml) from central server and copy at folder "/ckyc_client/xml_to_html/xml_file"
+11. Open "ckyc_client/xml_to_html/py_file/field.py" and replace the  "field.xml" at line number 6 with the policy file generated in step 10
+    Repeat the same in "ckyc_client/xml_to_html/py_file/update.py" file.
 
-10.now do migrations using following :
+12.now do migrations using following :
 
 	>>> python3 manage.py makemigrations 
 	>>> python3 manage.py migrate
