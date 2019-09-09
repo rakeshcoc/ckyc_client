@@ -1,0 +1,15 @@
+
+{% extends "base.html" %}
+
+    {% block body %}
+    <div align="center">
+<form action="{% url 'workflow:fetch_txn_status' %}" method="get">
+<h3> Enter txn-Id</h3><input type="text" name="txn_id">
+  <button type="submit" value="submit">Fetch</button>
+  </form>
+  </div>   
+
+
+    {% endblock %}
+
+

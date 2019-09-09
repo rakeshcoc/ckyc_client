@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}<div class="container">
+  <table class="table table-striped">
+     <thead>
+      <tr>
+        <th>Txn-Id Number</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for i in plist  %}
+    <tr>
+        <td><a href="{% url 'workflow:view-txn-details' i.txn_id %}">{{i.txn_id}}</a></td>        
+        <td>{{i.status}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %} 

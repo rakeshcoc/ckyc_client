@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+    {% block body %}
+<div class="container">
+Transaction-Id :{{txn_id}}
+  <table class="table table-striped">
+     <thead>
+      <tr>
+        <th>Field Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for key, values in finalprofile.items %}
+    <tr>
+        <td>{{key}}</td>
+        <td>{{values}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="container">
+<b>Mapping</b>
+  <table class="table table-striped">
+     <thead>
+      <tr>
+        <th>Field Name</th>
+        <th>Proof Attached</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for key, values in mapping.items %}
+    <tr>
+        <td>{{key}}</td>
+        <td>{{values}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<br><br>
+
+<div class="container">
+    {% for key,values in profilePhoto.items %}
+            {{key}}
+            <img src="data:image/jpeg;base64,{{values}}" style="width:40%;height:40%;">
+            <br>
+    {% endfor %}
+
+  
+</div>
+
+<div style="padding:50px " class="text-center">
+<a href="/accept_txn_details/{{txn_id}}/" class="btn btn-success btn-lg" style="margin-right: 40px"> Accept </a>
+<a href="/reject_txn_details/{{txn_id}}/" class="btn btn-danger btn-lg" style="margin-right: 40px"> Reject </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}<div class="container">
+ {% if user.is_maker %}
+     <h2>Welcome Maker, {{ user.get_full_name }}</h2>
+    <a href="{% url 'workflow:mod_form' %}"><h3>Add New Customer Details</h3></a>
+ 	<br><a href = "{% url 'workflow:updatehtmlform1' %}"><h3>Update Customer Details</h3></a> <br>
+  <a href = "{% url 'workflow:forgot' %}"><h3>Forgot Digital-Id?</h3></a> <br>
+  <a href = "{% url 'workflow:fetchform' %}"><h3>Fetch Full KYC</h3></a> <br>
+   <a href = "{% url 'workflow:check_txn_form' %}"><h3>Check Transaction status</h3></a> <br>
+   {% endif %}
+   {% if user.is_checker %}
+    <h2>Welcome Checker, {{ user.get_full_name }}</h2>
+      <a href="{% url 'workflow:pending-txns' %}"><h3>View Pending Txn-Requests</h3></a><br>
+  <a href = "{% url 'workflow:forgot' %}"><h3>Forgot Digital-Id?</h3></a> <br>
+  <a href = "{% url 'workflow:fetchform' %}"><h3>Fetch Full KYC</h3></a> <br>
+  <a href = "{% url 'workflow:check_txn_form' %}"><h3>Check Transaction status</h3></a> <br>
+   {% endif %}
+</div>
+{% endblock %}
+

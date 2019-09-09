@@ -1,0 +1,171 @@
+<html>
+  <head>
+    <title>dxhcb</title>
+    <style>
+		#regForm {
+		background-color: #fff;
+		margin: 100px auto;
+		font-family: Raleway;
+		padding: 40px;
+		width: 70%;
+		min-width: 300px;
+		}
+		body {
+		  background-color: skyblue;
+		}
+
+		h1 {
+		text-align: center;  
+		}
+
+		input {
+		padding: 10px;
+		width: 100%;
+		font-size: 17px;
+		font-family: Raleway;
+		border: 1px solid #aaaaaa;
+		}
+input.invalid {
+  background-color: #ffdddd;
+}
+
+* {
+  box-sizing: border-box;
+  padding:10px;
+}
+
+/* Hide all steps by default: */
+.tab{
+	display: none;
+}
+
+
+button {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+#prevBtn {
+  background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;  
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #4CAF50;
+}
+
+		</style>
+  </head>
+  <body onload="init()">
+    <div class="container">
+      <script type="text/javascript" src="update.js">
+        <p>Hello</p>
+      </script>
+      <h1>Please Fill detail form</h1>
+      <form action="" id="regForm" method="post" name="myform" enctype="multipart/form-data" onsubmit="return(dependency());">
+					{% csrf_token %}
+					
+   <script type="text/javascript">
+    		
+
+
+    			var globalArray = []
+    			var globalSet = new Set()
+    			var myMap = new Map();
+
+    			function getSelectedOptions(sel) {
+				  var opts = [],opt;
+				  var len = sel.options.length;
+				  for (var i = 0; i != len; i++) {
+				    opt = sel.options[i];
+
+				    if (opt.selected) {
+				    	// Example Code
+				    	//console.log("selected option"+opt.value)
+
+				    	if(myMap.has(sel.name)){
+				    	 var selected_elements = myMap.get(sel.name);
+				    	 if(selected_elements.has(opt.value)){
+				    	 	selected_elements.delete(opt.value);
+				    	 }else{
+				    	 	selected_elements.add(opt.value);
+				    	 }
+				    	 myMap.set(sel.name , selected_elements);
+				    	 globalSet.add(opt.value)
+				    	}
+				    	else{
+				    		var temp_array = new Set();
+				    		temp_array.add(opt.value);
+				    		myMap.set(sel.name, temp_array);
+				    		globalSet.add(opt.value);
+				    	}
+                  	}
+                
+          			console.log(myMap);
+				  }
+				}
+
+				function generatePage3(){
+						globalSet.forEach(function(item){
+						  var label = document.createElement('Label');
+					      label.setAttribute("for", item);
+					      label.innerHTML = item;
+					      var input_tag = document.createElement('input');
+					      
+					      input_tag.setAttribute("type", "file");
+					      input_tag.setAttribute("name", item);
+					      input_tag.setAttribute("id", item);
+					      
+					      document.getElementById('page3').appendChild(label);
+					      document.getElementById('page3').appendChild(input_tag);
+					      
+					      console.log(globalSet)
+						});
+					      
+					
+				}
+
+
+//pages js css added stuff
+
+//end of css,js pages 
+
+			
+	</script><h3>Policy Name is policy_cps</h3><div id="page1" class="tab"><div class="form-group"><label for="LastName">LastName*:</label><div class="form-group"><input type="text" name="LastName" required="true" class="form-control up-class" placeholder="Required" pattern="^[A-Za-z ]+$" title="Only charcters"/></div></div><div class="form-group"><label for="spouse name">spouse name:</label><div class="form-group"><input type="text" name="spouse name" required="true" class="form-control up-class" placeholder="Optional" pattern="^[A-Za-z ]+$" title="Only charcters"/></div></div><div class="form-group"><label for="phone number">phone number*:</label><div class="form-group"><input type="number" name="phone number" required="true" class="form-control up-class" placeholder="Required" pattern="^\d{10}" title="10 digit valid Phone-Number"/></div></div><div class="form-group"><label for="address">address:</label><div class="form-group"><input type="textarea" name="address" required="true" class="form-control up-class" placeholder="Optional" pattern="^[A-Za-z ]+$" title="asdas"/></div></div></div><div id="page2" class="tab"><div id="doc" class="documents_div">LastName
+    				*:
+				<div id="LastName"><span class="sample_div"><input name="sample123" type="checkbox" id="VoterID">VoterID</input></span></div></div><div id="doc" class="documents_div">spouse name
+    				*:
+				<div id="spouse name"><span><input name="sample123" type="checkbox" id="ration card">ration card</input></span></div></div><div id="doc" class="documents_div">phone number
+    				*:
+				<div id="phone number"><span class="sample_div"><input name="sample123" type="checkbox" id="utility bill">utility bill</input></span></div></div><div id="doc" class="documents_div">address
+    				*:
+				<div id="address"><span><input name="sample123" type="checkbox" id="Passport">Passport</input></span><span><input name="sample123" type="checkbox" id="Driving licence">Driving licence</input></span><span><input name="sample123" type="checkbox" id="VoterID">VoterID</input></span></div></div></div>
+<div style="overflow:auto;"><div style="float:right;"><button type="button" id="prevBtn" onclick="prev(-1)">Previous</button><button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button></div></div><div id="page3" class="tab"/></form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+    {% block body %}
+    <div align="center">
+<form action="{% url 'workflow:check_did1' %}" method="get">
+<h3> Enter Digital-Id </h3><input type="text" name="digital_id" title="Enter 12 digits digital_id only" required="True">
+  <button type="submit" value="submit">Submit</button>
+  </form>
+  </div>   
+    {% endblock %}

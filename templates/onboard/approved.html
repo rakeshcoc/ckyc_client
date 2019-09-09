@@ -1,0 +1,10 @@
+
+			{% extends 'base.html' %}
+			{% block body %}
+
+			<div class="text-center" >
+				<h3>{{ abc }}</h3>
+				<br><br>
+				<a href="{% url 'workflow:pending-txns' %}">Back to Pending Requests</a>
+			</div>
+			{% endblock %}

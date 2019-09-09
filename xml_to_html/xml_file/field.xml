@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<cKYC_central>
+   <policy-name title="policy_cps">
+      <field type="proof_required">
+         <name>FirstName</name>
+         <meta>primary</meta>
+         <datatype>text</datatype>
+         <pattern>^[A-Za-z ]+$</pattern>
+         <message>Only charcters</message>
+         <proof>
+            <attachments>Passport</attachments>
+            <attachments>Driving licence</attachments>
+            <attachments>VoterID</attachments>
+            <attachments>PAN Card</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>LastName</name>
+         <meta>mandatory</meta>
+         <datatype>text</datatype>
+         <pattern>^[A-Za-z ]+$</pattern>
+         <message>Only charcters</message>
+         <proof>
+            <attachments>VoterID</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>DOB</name>
+         <meta>primary</meta>
+         <datatype>date</datatype>
+         <pattern>
+            <min>1902</min>
+            <max>2002</max>
+         </pattern>
+         <message>asdas</message>
+         <proof>
+            <attachments>Passport</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>Father Name</name>
+         <meta>primary</meta>
+         <datatype>text</datatype>
+         <pattern>^[A-Za-z ]+$</pattern>
+         <message>Only charcters</message>
+         <proof>
+            <attachments>Passport</attachments>
+            <attachments>PAN Card</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>Gender</name>
+         <meta>primary</meta>
+         <datatype>select</datatype>
+         <select>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+         </select>
+         <message>asdasas</message>
+         <proof>
+            <attachments>Passport</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>spouse name</name>
+         <meta>optional</meta>
+         <datatype>text</datatype>
+         <pattern>^[A-Za-z ]+$</pattern>
+         <message>Only charcters</message>
+         <proof>
+            <attachments>ration card</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>phone number</name>
+         <meta>mandatory</meta>
+         <datatype>number</datatype>
+         <pattern>^\d{10}</pattern>
+         <message>10 digit valid Phone-Number</message>
+         <proof>
+            <attachments>utility bill</attachments>
+         </proof>
+      </field>
+      <field type="proof_required">
+         <name>address</name>
+         <meta>optional</meta>
+         <datatype>textarea</datatype>
+         <pattern>^[A-Za-z ]+$</pattern>
+         <message>asdas</message>
+         <proof>
+            <attachments>Passport</attachments>
+            <attachments>Driving licence</attachments>
+            <attachments>VoterID</attachments>
+         </proof>
+      </field>
+   </policy-name>
+</cKYC_central>
