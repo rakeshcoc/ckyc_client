@@ -18,5 +18,4 @@ def field():
 			for t in policy.iter():
 				if t.tag == "attachments":
 					prooffield.add(t.text)
-	print(kfield,ofield,prooffield)
 	return kfield,ofield,prooffield
