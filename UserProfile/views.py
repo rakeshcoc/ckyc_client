@@ -39,7 +39,7 @@ def maker_register(request):
 			user.save()
 			# username = form.cleaned_data.get('username')
 			# form.cleaned_data.get('username')
-			return HttpResponse('thnaks')
+			return HttpResponseRedirect('/login')
 
 
 	else:
@@ -56,7 +56,7 @@ def checker_register(request):
 			user.save()
 			# username = form.cleaned_data.get('username')
 			# form.cleaned_data.get('username')
-			return HttpResponse('thnaks')
+			return HttpResponseRedirect('/login')
 	else:
 		form = UserRegisterForm()
 	return render(request,'registration/register.html',{'form':form})

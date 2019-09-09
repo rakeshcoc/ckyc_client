@@ -71,7 +71,7 @@ function nextPrev(n) {
       }else{
       var label = document.createElement('Label');
       label.setAttribute("for", item);
-      label.innerHTML = ele+":"+item;
+      label.innerHTML = item;
       var input_tag = document.createElement('input');
       
       input_tag.setAttribute("type", "file");
