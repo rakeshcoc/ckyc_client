@@ -25,10 +25,7 @@ urlpatterns = [
 #    path('',include('details.urls',namespace ="details")),
     path('',include('UserProfile.urls',namespace ="userprofile")),
     path('',include('workflow.urls',namespace ="workflow")),
-
-
-
-    url(r'^form/temp.js/$',views.js,name='js'),
+    # url(r'^form/temp.js/$',views.js,name='js'),
     url(r'^mod_form/addform.js/$',views.addform,name='addform'),
     url(r'^check_did1/updateform1/update.js/$',views.updateform,name='updateform'),
     path('first',views.first,name="first")

@@ -2,7 +2,7 @@
     {% block body %}
 
     <div align="center">
-<form action="{% url 'workflow:fetch' %}" method="get">
+<form action="{% url 'workflow:check_did2' %}" method="get">
 <h3> Enter Digital-Id</h3><input type="text" name="digital_id" title="Enter 12 digits digital_id only">
   <button type="submit" value="submit">Fetch</button>
   </form>
