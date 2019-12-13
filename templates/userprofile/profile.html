@@ -46,7 +46,9 @@
 <div class="container">
       {% for key,values in profilePhoto.items %}
             {{key}}
-            <img src="data:image/jpeg;base64,{{values}}" style="width:40%;height:40%;">
+            <iframe src="data:image/jpeg;base64,{{values}}" height="400px" width="100%"></iframe>
+
+            <!-- <img src="data:image/jpeg;base64,{{values}}" style="width:40%;height:40%;"> -->
             <br>
     {% endfor %}
 

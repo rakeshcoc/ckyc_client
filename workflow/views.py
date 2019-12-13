@@ -38,14 +38,9 @@ def generateTxnId(d_id,time_c):
 BankName = settings.BANK_NAME
 mytoken='Token '+settings.CKYC_AUTH_TOKEN
 url = "http://"+settings.CENTRAL_SERVER+":8000/ckyc-api/"
+Blockchain_url = settings.BLOCKCHAIN_URL
 token = settings.CKYC_AUTH_TOKEN
 kfield,ofield,prooffield = workflow.parser.field()
-# kfield = OrderedDict()
-# ofield = OrderedDict()
-# prooffield = OrderedDict()
-# kfield = ["First_Name","Date_Of_Birth","Gender","Father_Name"]
-# ofield = ["Last_Name","Place_of_birth","Address","Spouse_Name","id_marks","Email_Id","Phone_no"]
-# prooffield = ["Passport","Birth_Certificate","Photo_of_cutmarks","Something"]
 status =["Submitted","Verification Failed","Verified","Rejected","Approved"]
 call('python3 xml_to_html/py_file/field.py',shell=True)
 call('python3 xml_to_html/py_file/update.py',shell=True)
@@ -63,7 +58,7 @@ def Pending_txns(request):
 		result ="You are not authorized"
 		return render(request,'onboard/success.html',{'abc':result})
 
-def accept_txn_details(request,txn_id):
+def accept_txn_details(request,txn_id):                                    #send_to_chain
 		try:
 			val=None
 			digital_id =""
@@ -77,7 +72,7 @@ def accept_txn_details(request,txn_id):
 				txn_type = count['type']
 				time = (datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
 				payload ={"created_user":mytoken,"status":status[2],"txn_id":txn_id,"remarks":""}
-				x = requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
+				requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
 				payload = {      'digital_identity' : digital_id,'last_modified_by':mytoken,'last_update_time':time}
 				if txn_type == "new":
 					r = requests.post(url = url,data=payload,headers={'Authorization':mytoken})
@@ -87,20 +82,30 @@ def accept_txn_details(request,txn_id):
 						data =eval(eval(r.content.decode()))
 						val['header']['updated_txn_id'] = data["result"]["updated_txn_id"]
 						workflow.final_connect.update_db(digital_id,val)
+
+						print("********** ADD IN CHAIN *************")
+						chain_payload = {"ckycId":data["result"]["digital_id"],"bankName":data["result"]["bankName"],
+						"ckyctxId":data["result"]["updated_txn_id"],"ckyctimestamp":data["result"]["timestamp"],"ckycStatus":data["result"]["status"]}
+						print(chain_payload)
+						try:
+							# New insert to chain, please make sure url is working.
+							requests.post(url = Blockchain_url+"/ckyc/transactions",json=chain_payload)
+							print(" Record added to chain")	
+						except :
+							print(" Chain_Link not found, so record not added to chain")
+
+
 						txn_flow.objects.filter(txn_id=txn_id).update(status=status[4])
-						a = requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
+						requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
 						result ="Txn_id: "+str(txn_id) + "Status: Approved "
 
 					elif r.status_code == 409:
 						payload ={"created_user":mytoken,"status":status[3],"txn_id":txn_id,"remarks":"Digtal-Id already created"}
-						a = requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
+						requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
 						txn_flow.objects.filter(txn_id=txn_id).update(status=status[3],remarks="Digtal-Id already created")
-						result ="Txn_id: "+str(txn_id) + "Status: Rejected "
-
-
+						result ="Txn_id: "+str(txn_id) + "Status: Rejected as DigitalId already registered"
 				else:
 					url1 = url[0:-1]+"-update/"
-					print(url1)
 					r = requests.post(url = url1,data=payload,headers={'Authorization':mytoken})
 					if r.status_code == 201:
 						txn_flow.objects.filter(txn_id=txn_id).update(status=status[2])
@@ -109,8 +114,19 @@ def accept_txn_details(request,txn_id):
 						t =data["result"]["updated_txn_id"]
 						val['header'].update({'updated_txn_id': t})
 						workflow.final_connect.update_db(digital_id,val)
+
+						print("********** Update IN CHAIN *******")
+						chain_payload = {"ckycId":data["result"]["digital_id"],"bankName":data["result"]["bankName"],
+						"ckyctxId":data["result"]["updated_txn_id"],"ckyctimestamp":data["result"]["timestamp"],"ckycStatus":data["result"]["status"]}
+						print(chain_payload)
+						try:
+							# Update to chain, please make sure url is working.
+							requests.post(url = Blockchain_url+"/ckyc/transactions/update",json=chain_payload)
+							print(" Record updated to chain")	
+						except :
+							print(" Chain_Link not found, so record not updated to chain")
 						txn_flow.objects.filter(txn_id=txn_id).update(status=status[4])
-						a = requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
+						requests.put(url=url+"txn-status/"+txn_id+"/",data=payload,headers={'Authorization':mytoken})
 						result ="Txn_id: "+str(txn_id) + "Status: Approved "
 					# return render(request,'onboard/success.html',{'abc':result})
 
@@ -135,7 +151,6 @@ def view_txn_details(request,txn_id):
 		else:
 			for i in count['value']:
 				x = i['body']
-#			print(x)
 			profilePhoto ={}
 			profileBuild ={}
 			for i in prooffield:
@@ -153,7 +168,6 @@ def view_txn_details(request,txn_id):
 
 			mapping = x['mapping']
 			return render(request,'workflow/view_txn_details.html',{"finalprofile":profileBuild,"profilePhoto":profilePhoto,"txn_id":txn_id,"mapping":mapping})
-#		return render(request,'workflow/plist.html',{'plist':plist})
 	else:
 		result ="You are not authorized"
 		return render(request,'onboard/success.html',{'abc':result})
@@ -166,7 +180,6 @@ def mod_form(request):
 		key = ""
 		for i in kfield:
 			key = key + request.POST[i]
-		# request.POST["t"]
 		d_id = int(hashlib.sha256(key.encode()).hexdigest(), 16) % (10 ** 12)
 		digital_id = int(str(d_id).rstrip("L"))
 		temp_id = uuid.uuid3(uuid.NAMESPACE_DNS, str(digital_id))
@@ -174,7 +187,6 @@ def mod_form(request):
 		digital_id =digitalId.upper()[:12]
 		body ={}
 		header = {}
-		# request.POST['t']
 		t = request.POST['map']
 		mapping =eval(t)['myMap']
 		print(mapping) 
@@ -206,12 +218,13 @@ def mod_form(request):
       					'last_update_time':time
 				}
 		try:
-			# s=requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})
 			if workflow.final_connect.localfind(str(digital_id)) > 0:
 				result ="Account is already registered with token Id "+str(digital_id)
 				return render(request,'onboard/success.html',{'abc':result})
-			
-			elif requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken}).status_code == 200 :
+
+			#  CHECK CHAIN already have registered digital_id or not
+			elif requests.post(url = Blockchain_url+"/ckyc/transactions/ckycId",json={"ckycId":digital_id}).status_code == 200 :
+			# elif requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken}).status_code == 200 :
 				result ="You are already registered,please goto update section if want to update"
 				return render(request,'onboard/success.html',{'abc':result})
 
@@ -242,9 +255,15 @@ def update_check_did(request):
 		digital_id =request.GET["digital_id"]
 		if workflow.final_connect.localfind(digital_id) > 0 :
 			result ="Your Digital Id is:"+str(digital_id)
-		elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 200 :
+
+		#  CHECK CHAIN already have registered digital_id or not
+		elif requests.post(url = Blockchain_url+"/ckyc/transactions/ckycId",json={"ckycId":digital_id}).status_code == 200 :
+		# elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 200 :
 			result ="Success" + " "+str(digital_id)
-		elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 503 :
+
+		#  Ensure BLOCKCHAIN server is up and running
+		elif requests.post(url = Blockchain_url+"/ckyc/transactions/ckycId",json={"ckycId":digital_id}).status_code == 503 :
+		# elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 503 :
 			result ="Central Server Down"
 			return render(request,'onboard/success.html',{'abc':result,})
 		else:
@@ -330,7 +349,10 @@ def forgot(request):
 			digital_id =digitalId.upper()[:12]
 			if workflow.final_connect.localfind(digital_id) > 0 :
 				result ="Your Digital Id is:"+str(digital_id)
-			elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 200 :
+
+			#  CHECK CHAIN already contains given registered digital_id or not
+			elif requests.post(url = Blockchain_url+"/ckyc/transactions/ckycId",json={"ckycId":digital_id}).status_code == 200 :
+			# elif (requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})).status_code == 200 :
 				result ="Success" + " "+str(digital_id)
 			else:
 				result ="Sorry no record found"
@@ -347,7 +369,10 @@ def fetch_form(request):
 def update_check_did2(request):
 	if request.method == 'GET':
 		digital_id =request.GET["digital_id"]
-		r =requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})
+
+		#  CHECK CHAIN already have registered digital_id or not
+		r =requests.post(url = Blockchain_url+"/ckyc/transactions/ckycId",json={"ckycId":digital_id})
+		# r =requests.get(url = url+"users/"+str(digital_id)+"/",headers={'Authorization':mytoken})
 		if r.status_code == 200 :
 			result ="Success" + " "+str(digital_id)
 		elif r.status_code == 503:
@@ -366,20 +391,14 @@ def fetch(request):
 	if request.method == 'GET':
 		finalprofile = OrderedDict()
 		call('rm media/decode/*',shell=True)
-		# mapper ={}
 		try:			
 			for i in kfield:
 				finalprofile.update({i:""})
-				# mapper[i] =""
-
 			for j in ofield:
 				finalprofile.update({j:""})
-				# mapper[j] =""
-
 			for k in prooffield:
 				finalprofile.update({k:""})
-				# mapper[k] =""
-			finalprofile['mapping'] = ""
+			finalprofile['mapping'] = {}
 			digital_id =""
 			if request.session.has_key('digital_id1'):
 				digital_id = request.session['digital_id1']
@@ -395,15 +414,17 @@ def fetch(request):
 					for j in membersData[i['bank']]['value']:
 						if j['header']['updated_txn_id'] == i['txn_id']:
 							for k in j['body']:
-								if finalprofile[k] == "":
+								if k != "mapping" and finalprofile[k] == "":
 									finalprofile[k] = j['body'][k]
+								elif k == "mapping":
+									for t in j['body'][k]:
+										finalprofile[k][t] = j['body'][k][t]
 
 				profileBuild ={}
 				profilePhoto = {}
 				for i in prooffield:
-					if i in finalprofile:
-						if finalprofile[i]!="":
-							profilePhoto[i] = finalprofile[i]
+					if i in finalprofile and finalprofile[i]!="":
+						profilePhoto[i] = finalprofile[i]
 
 				for i in kfield:
 					profileBuild[i] = finalprofile[i]
@@ -423,13 +444,11 @@ class fetch_by_ckyc(APIView):
 	def post(self,request):
 		try:
 			key = request.data["digital_id"]
-#			public_key = request.data["public_key"]
 			j=workflow.final_connect.retrieve_info_by_seq(key)
 			if j == 0:
 				j = {"msg":"Invalid Digital Id"}
 				return Response(j,status=status.HTTP_404_NOT_FOUND)
 			else:
-#				detai(ls.encode.encrypt(j)
 				for i in j['value']:
 					print(type(i))
 				return Response(j)

@@ -21,8 +21,7 @@ def update_db(key,updated_detail):
 		for i in x:
 			payload = i["value"]
 			payload.append(updated_detail)
-			mycol.remove({"_id":str(key)})
-			mycol.insert_one({"_id":str(key),"value":payload})
+			mycol.update_one({"_id":str(key)},{'$set':{"value":payload}})
 	else:
 		mycol.insert_one({"_id":str(key),"value":[updated_detail]})
 		print("Key not present")

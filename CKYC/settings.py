@@ -86,10 +86,10 @@ WSGI_APPLICATION = 'CKYC.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-DATABASE_LOCAL='sbi'
+DATABASE_LOCAL='axis'
 CENTRAL_SERVER='172.27.80.64'
-BANK_NAME='SBI'
-CKYC_AUTH_TOKEN="ebd50d7a16cfad9eb6e961cfc122b03b4da6475a"
+BANK_NAME='axis'
+CKYC_AUTH_TOKEN="831b71d76b0d367929132c87a6134febb510278e"
 
 DATABASES = {
     'default': {
@@ -142,7 +142,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
+BLOCKCHAIN_URL = 'localhost:5500'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'
