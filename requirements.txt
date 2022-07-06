@@ -6,7 +6,7 @@ djangorestframework==3.10.3
 djongo==1.2.35
 freeze==1.0.10
 idna==2.8
-lxml==4.4.1
+lxml==4.9.1
 pymongo==3.9.0
 pytz==2019.2
 requests==2.22.0
